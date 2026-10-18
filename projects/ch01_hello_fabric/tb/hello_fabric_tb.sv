@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // hello_fabric_tb.sv -- exhaustive, self-checking testbench for
 // Project 1. Drives all 1,024 switch patterns and checks that every
-// LED copies its switch. Prints one PASS or FAIL line.
+// LED copies its switch. Shows the first few mismatches, then prints
+// one PASS or FAIL line.
 module hello_fabric_tb;
   timeunit 1ns; timeprecision 1ps;
 
@@ -20,7 +21,7 @@ module hello_fabric_tb;
       #1;
       if (led !== sw) begin
         errors++;
-        $display("mismatch: sw=%b led=%b", sw, led);
+        if (errors <= 3) $display("mismatch: sw=%b led=%b", sw, led);
       end
     end
     if (errors != 0) begin

@@ -29,9 +29,9 @@ count and the LUT and flip-flop counts).
 
 ```
 cd projects/ch01_hello_fabric
-verilator --binary -Wall --timescale 1ns/1ps \
+verilator --binary -Wall --quiet --timescale 1ns/1ps \
   --top-module hello_fabric_tb rtl/hello_fabric.sv tb/hello_fabric_tb.sv
-obj_dir/Vhello_fabric_tb
+obj_dir/Vhello_fabric_tb +verilator+quiet
 ```
 
 ## Hardware checklist
