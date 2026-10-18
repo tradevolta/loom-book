@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: Apache-2.0
+# Open-source checks (tools/check.sh) on push, pull request, weekly
+# and on demand: text hygiene, book-listing identity, Verible lint and
+# format, Verilator lint, and every testbench on Verilator and Icarus.
+# Vivado builds need a self-hosted runner with Vivado 2025.2; that job
+# arrives with Chapter 2.
+name: ci
+on:
+  push:
+    branches: [main]
+    tags: ["v*", "ch*-*"]
+  pull_request:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore the pinned open-source tools
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/loom-oss
+          key: loom-oss-${{ hashFiles('tools/versions.lock', 'tools/install-oss.sh') }}
+
+      - name: Build dependencies for Verilator and Icarus Verilog
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf bison flex gperf help2man \
+            g++ libfl-dev make perl python3 zlib1g-dev
+
+      - name: Install Verilator, Icarus Verilog, Verible (versions.lock)
+        run: tools/install-oss.sh "$HOME/loom-oss"
+
+      - name: Lint, format, listings and simulation
+        run: |
+          export PATH="$HOME/loom-oss/bin:$PATH"
+          tools/check.sh

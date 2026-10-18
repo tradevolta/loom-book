@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: Apache-2.0
+# versions.lock -- the tool versions this repository is built and
+# tested with (book plan, section 9). One `name = "version"` per line.
+# tools/vivado/build.tcl warns when the running Vivado is not `vivado`;
+# tools/install-oss.sh installs the open-source tools listed here.
+
+# AMD tools: frozen at 2025.2 for the whole book (ML Standard edition,
+# no licence file needed). Installed natively; never redistributed.
+vivado = "2025.2"
+vitis = "2025.2"
+petalinux = "2025.2"
+
+# Open-source tools (CI and local)
+verilator = "5.052"
+iverilog = "13.0"
+verible = "v0.0-4296-g0f262651"
+
+# Pinned by the plan, first used in later chapters
+cocotb = "2.1.0"
+pyuvm = "5.0.0"
+yosys = "0.70"
+
+# Pinned at hardware bring-up (book Chapter 23); not yet known
+esp_at = "TBD-verified-on-hardware"

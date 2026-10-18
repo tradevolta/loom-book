@@ -1,0 +1,15 @@
+# Vivado outputs (tools/vivado/build.tcl writes to <project>/build/)
+build/
+.Xil/
+*.jou
+*.log
+*.str
+*.dcp
+*.bit
+# Simulation outputs
+obj_dir/
+*.vvp
+*.vcd
+*.fst
+# Python
+__pycache__/

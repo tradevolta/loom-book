@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+# Flags for verible-verilog-format (--flagfile): 2-space indent, 72 cols
+--indentation_spaces=2
+--wrap_spaces=4
+--port_declarations_indentation=indent
+--named_port_indentation=indent
+--named_parameter_indentation=indent
+--formal_parameters_indentation=indent
+--column_limit=72
