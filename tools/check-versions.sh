@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0
 # check-versions.sh -- compare the tools on PATH with the pins in
-# tools/versions.lock. One line per tool: ok, DIFF (a different
-# version) or missing. A DIFF is a warning; with --strict it is an
+# tools/versions.lock. One line per tool, `<tool> <pinned>: ok`, or
+# DIFF (a different version) or missing. A DIFF is a warning; with --strict it is an
 # error (CI uses --strict). A missing tool is never an error here:
 # CI has no Vivado, and a laptop may have no cocotb yet.
 #
@@ -35,11 +35,11 @@ for t in vivado:vivado verilator:verilator iverilog:iverilog \
   want=$(pin "$tool")
   have=$(found "$tool" "${t#*:}")
   if [ -z "$have" ]; then
-    printf '%-10s %-22s missing\n' "$tool" "$want"
+    echo "$tool $want: missing"
   elif [ "$have" = "$want" ]; then
-    printf '%-10s %-22s ok\n' "$tool" "$want"
+    echo "$tool $want: ok"
   else
-    printf '%-10s %-22s DIFF: found %s\n' "$tool" "$want" "$have"
+    echo "$tool $want: DIFF, found $have"
     diffs=$((diffs + 1))
   fi
 done
