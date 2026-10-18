@@ -1,0 +1,5 @@
+listing,id,book_source,repo_export_path,library_path
+2.1,lst-02-makefile,listings/ch02/Makefile,book/listings/ch02/02-01_Makefile,projects/ch01_hello_fabric/Makefile
+2.2,lst-02-projectmk,listings/ch02/project.mk,book/listings/ch02/02-02_project.mk,tools/make/project.mk
+2.3,lst-02-cocotb,listings/ch02/test_hello_fabric.py,book/listings/ch02/02-03_test_hello_fabric.py,projects/ch01_hello_fabric/tb/test_hello_fabric.py
+2.4,lst-02-ci,listings/ch02/ci.yml,book/listings/ch02/02-04_ci.yml,.github/workflows/ci.yml
