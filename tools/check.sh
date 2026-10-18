@@ -15,7 +15,9 @@ flags=tools/verible-format.flags
 echo "== text hygiene and book listings"
 python3 tools/check_repo.py
 
-mapfile -t sv < <(git ls-files '*.sv')
+# book/listings/ holds numbered byte copies of these files (checked
+# by check_repo.py); their file names do not match the module names.
+mapfile -t sv < <(git ls-files '*.sv' ':!book/listings/')
 echo "== verible lint and format (${#sv[@]} files)"
 verible-verilog-lint "${sv[@]}"
 for f in "${sv[@]}"; do

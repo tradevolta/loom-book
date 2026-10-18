@@ -4,8 +4,9 @@
 
 1. Every tracked text file: ASCII only, LF line ends, no TABs, no
    trailing spaces, ends with a newline. Code files: at most 100
-   columns. Files under book/listings/: at most 72 columns (the
-   book's printed limit; 64 inside callouts is checked by the book).
+   columns. Listing files under book/listings/: at most 72 columns
+   (the book's printed limit; 64 inside callouts is checked by the
+   book).
 2. book/listings/chNN/INDEX.csv: every listing exported from the
    manuscript that names a repository file (library_path) must be
    byte-identical to that file, so the book prints the real code.
@@ -41,8 +42,12 @@ def hygiene(path: pathlib.Path, problems: list[str]) -> None:
         problems.append(f'{rel}: TAB character')
     if data and not data.endswith(b'\n'):
         problems.append(f'{rel}: no newline at end of file')
-    limit = 72 if rel.startswith('book/listings/') else (
-        100 if path.suffix in CODE else None)
+    # Printed listings: 72 columns. Their INDEX.csv is a manifest, not
+    # a listing, and holds long paths: no column limit.
+    if rel.startswith('book/listings/') and path.suffix != '.csv':
+        limit = 72
+    else:
+        limit = 100 if path.suffix in CODE else None
     for n, line in enumerate(data.split(b'\n'), 1):
         if line.endswith(b' '):
             problems.append(f'{rel}:{n}: trailing space')
