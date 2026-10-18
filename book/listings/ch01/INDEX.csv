@@ -1,0 +1,5 @@
+listing,id,book_source,repo_export_path,library_path
+1.1,lst-01-design,listings/ch01/hello_fabric.sv,book/listings/ch01/01-01_hello_fabric.sv,projects/ch01_hello_fabric/rtl/hello_fabric.sv
+1.2,lst-01-xdc,listings/ch01/hello_fabric.xdc,book/listings/ch01/01-02_hello_fabric.xdc,projects/ch01_hello_fabric/constr/hello_fabric.xdc
+1.3,lst-01-prog,listings/ch01/prog.tcl,book/listings/ch01/01-03_prog.tcl,tools/vivado/prog.tcl
+1.4,lst-01-tb,listings/ch01/hello_fabric_tb.sv,book/listings/ch01/01-04_hello_fabric_tb.sv,projects/ch01_hello_fabric/tb/hello_fabric_tb.sv
