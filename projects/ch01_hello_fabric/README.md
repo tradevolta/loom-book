@@ -8,31 +8,24 @@ same number, through one continuous assignment and no clock.
 | `rtl/hello_fabric.sv` | The design (top module `hello_fabric`) |
 | `constr/hello_fabric.xdc` | Package pins and I/O standards for `sw[9:0]` and `led[9:0]` |
 | `tb/hello_fabric_tb.sv` | Exhaustive self-checking testbench (all 1,024 switch patterns) |
+| `tb/test_hello_fabric.py` | cocotb smoke test, also exhaustive (Chapter 2) |
+| `Makefile` | `make lint`, `sim`, `test`, `bit`, `prog`, `clean` (`tools/make/project.mk`) |
 
-## Build and program (Vivado 2025.2)
+## Lint, simulate, build and program
 
-From the repository root, with jumper JP2 on JTAG and the board
-connected through its PROG UART micro-USB port:
-
-```
-vivado -mode batch -source tools/vivado/build.tcl \
-  -tclargs projects/ch01_hello_fabric hello_fabric
-vivado -mode batch -source tools/vivado/prog.tcl \
-  -tclargs projects/ch01_hello_fabric/build/hello_fabric.bit
-```
-
-The build writes `build/hello_fabric.bit` and the reports in
-`build/reports/` (`summary.txt` has WNS, WHS, the critical-warning
-count and the LUT and flip-flop counts).
-
-## Simulate (no Vivado needed)
+From this directory:
 
 ```
-cd projects/ch01_hello_fabric
-verilator --binary -Wall --quiet --timescale 1ns/1ps \
-  --top-module hello_fabric_tb rtl/hello_fabric.sv tb/hello_fabric_tb.sv
-obj_dir/Vhello_fabric_tb +verilator+quiet
+make            # lint, sim and test: no Vivado needed
+make bit        # Vivado 2025.2: build/hello_fabric.bit, build/reports/
+make prog       # program over JTAG (jumper JP2 on JTAG, PROG UART port)
 ```
+
+`make bit` runs `tools/vivado/build.tcl` in batch mode and `make prog`
+runs `tools/vivado/prog.tcl`; Chapter 1 shows the same scripts run by
+hand from the repository root. The build writes
+`build/reports/summary.txt` with WNS, WHS, the critical-warning count
+and the LUT and flip-flop counts.
 
 ## Hardware checklist
 
@@ -48,11 +41,18 @@ Rev D with Vivado 2025.2 and record the results in the book.
 4. `build.tcl` completes with no errors; Vivado applies the group
    `IOSTANDARD` line (`[get_ports {sw[*] led[*]}]`) to all twenty
    ports with no warning (check `io.rpt`: every `sw` and `led` port
-   LVCMOS33 at its package pin). Keep `build/reports/summary.txt`, `utilization.rpt`,
-   `timing_summary.rpt` and the log.
+   LVCMOS33 at its package pin). Keep `build/reports/summary.txt`,
+   `utilization.rpt`, `timing_summary.rpt` and the log.
 5. `prog.tcl` programs the device; note any DONE indicator.
 6. Each switch SW0..SW9, moved alone, lights only the LED with the same
    number. Record which switch position is 1 (LED on).
 7. All ten switches on: all ten LEDs on. All off: all off.
 8. SW10 and SW11 change nothing.
 9. Power-cycle: the design is gone (JTAG configuration is volatile).
+10. Chapter 2: `make bit` and `make prog` from this directory do the
+    same as items 4 and 5, and `make prog` after a source change
+    rebuilds first. Record `build/build.log`'s last lines.
+11. Chapter 2: `tools/check-versions.sh` reports `vivado 2025.2 ok`;
+    record the exact output of `vivado -version` it parses.
+12. Chapter 2: record the installation paths of `settings64.sh` and of
+    the cable-driver script (`install_drivers`) for Vivado 2025.2.

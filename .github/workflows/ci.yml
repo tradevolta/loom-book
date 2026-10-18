@@ -1,9 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
-# Open-source checks (tools/check.sh) on push, pull request, weekly
-# and on demand: text hygiene, book-listing identity, Verible lint and
-# format, Verilator lint, and every testbench on Verilator and Icarus.
-# Vivado builds need a self-hosted runner with Vivado 2025.2; that job
-# arrives with Chapter 2.
+# CI: tools/check.sh inside the open-source tools image built from
+# tools/Dockerfile, on every push and pull request, weekly and on
+# demand. The image is cached between runs and never published.
+# Vivado is not in CI: it is installed natively (Chapter 2).
 name: ci
 on:
   push:
@@ -21,26 +20,22 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - name: Restore the pinned open-source tools
-        id: cache
-        uses: actions/cache@v4
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build the tools image (tools/Dockerfile)
+        uses: docker/build-push-action@v7
         with:
-          path: ~/loom-oss
-          key: loom-oss-${{ hashFiles('tools/versions.lock', 'tools/install-oss.sh') }}
+          context: .
+          file: tools/Dockerfile
+          tags: loom-oss:ci
+          load: true
+          push: false
+          cache-from: type=gha,scope=loom-oss
+          cache-to: type=gha,mode=max,scope=loom-oss
 
-      - name: Build dependencies for Verilator and Icarus Verilog
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y autoconf bison flex gperf help2man \
-            g++ libfl-dev make perl python3 zlib1g-dev
-
-      - name: Install Verilator, Icarus Verilog, Verible (versions.lock)
-        run: tools/install-oss.sh "$HOME/loom-oss"
-
-      - name: Lint, format, listings and simulation
-        run: |
-          export PATH="$HOME/loom-oss/bin:$PATH"
-          tools/check.sh
+      - name: Lint, listings, simulation and cocotb tests
+        run: >
+          docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp
+          -v "$PWD:/work" -w /work loom-oss:ci tools/check.sh
