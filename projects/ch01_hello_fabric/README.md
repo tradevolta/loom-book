@@ -45,9 +45,10 @@ Rev D with Vivado 2025.2 and record the results in the book.
    design is loaded (factory configuration in QSPI, if any).
 3. In Vivado's Hardware Manager (or `prog.tcl`), the JTAG chain shows
    one target and an `xc7z007s` device. Record the names it prints.
-4. `build.tcl` completes with no errors; Vivado reads the multi-line
-   `set_property -dict {...}` form in `hello_fabric.xdc` without a
-   warning. Keep `build/reports/summary.txt`, `utilization.rpt`,
+4. `build.tcl` completes with no errors; Vivado applies the group
+   `IOSTANDARD` line (`[get_ports {sw[*] led[*]}]`) to all twenty
+   ports with no warning (check `io.rpt`: every `sw` and `led` port
+   LVCMOS33 at its package pin). Keep `build/reports/summary.txt`, `utilization.rpt`,
    `timing_summary.rpt` and the log.
 5. `prog.tcl` programs the device; note any DONE indicator.
 6. Each switch SW0..SW9, moved alone, lights only the LED with the same

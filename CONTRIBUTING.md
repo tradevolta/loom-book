@@ -36,9 +36,10 @@ print) applies to every file:
   `verible-verilog-format --flagfile=tools/verible-format.flags`.
 * Every testbench is self-checking, ends with one `PASS ...` or
   `FAIL ...` line and exits non-zero on failure.
-* Tcl and XDC: 2-space indent, one command per line; one
-  `set_property -dict` per pin, broken after `-dict {` where a line
-  would pass 72 columns.
+* Tcl and XDC: 2-space indent, one command per line. Constraints set
+  the I/O standard once per group of ports
+  (`set_property IOSTANDARD LVCMOS33 [get_ports {sw[*] led[*]}]`),
+  then one `set_property PACKAGE_PIN` line per port.
 * Every source file starts with `SPDX-License-Identifier: Apache-2.0`.
 
 Run the checks before you open a pull request:
